@@ -26,3 +26,5 @@ ENV/
 .vscode/
 *.swp
 .DS_Store
+*.pt
+best.pt

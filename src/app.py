@@ -9,8 +9,11 @@ app = Flask(__name__,
     template_folder='templates',
     static_folder='static')
 
-# Thay đổi model_path thành đường dẫn local
-model_path = os.path.join(os.path.dirname(__file__), 'model', 'best.pt')
+# Ưu tiên sử dụng MODEL_URL từ environment variable
+model_path = os.environ.get('MODEL_URL', 'https://drive.google.com/file/d/1b4E85lAa3_NVCXkre5Mty-0Z7DUaAmjl/view?usp=sharing')
+if not model_path:
+    model_path = os.path.join(os.path.dirname(__file__), 'model', 'best.pt')
+    
 try:
     detector = WasteDetector(model_path)
 except Exception as e:

@@ -7,14 +7,24 @@ import requests
 class WasteDetector:
     def __init__(self, model_path='best.pt'):
         try:
-            # Nếu model_path là URL, tải về
+            # Xử lý Google Drive link
+            if 'drive.google.com' in model_path:
+                file_id = model_path.split('/d/')[1].split('/')[0]
+                print(f"Detected Google Drive file ID: {file_id}")
+                model_path = f'https://drive.google.com/uc?export=download&id={file_id}'
+            
+            # Tải model nếu là URL
             if model_path.startswith('http'):
-                print("Downloading model...")
-                response = requests.get(model_path)
-                model_path = 'best.pt'
-                with open(model_path, 'wb') as f:
+                print("Downloading model from:", model_path)
+                response = requests.get(model_path, allow_redirects=True)
+                if response.status_code != 200:
+                    raise RuntimeError(f"Failed to download model: HTTP {response.status_code}")
+                    
+                local_path = os.path.join(os.path.dirname(__file__), 'best.pt')
+                with open(local_path, 'wb') as f:
                     f.write(response.content)
-                print("Model downloaded successfully!")
+                print(f"Model downloaded successfully to {local_path}")
+                model_path = local_path
 
             self.model = YOLO(model_path)
             self.class_names = {
