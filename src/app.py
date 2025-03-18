@@ -1,7 +1,7 @@
 from flask import Flask, render_template, Response
 import cv2
 import time
-from model.yolo import WasteDetector
+from src.model.yolo import WasteDetector  # Update import path
 import numpy as np
 import os
 
@@ -15,8 +15,11 @@ if not model_path:
     model_path = os.path.join(os.path.dirname(__file__), 'model', 'best.pt')
     
 try:
+    print("Initializing model from:", model_path)
     detector = WasteDetector(model_path)
+    print("Model loaded successfully")
 except Exception as e:
+    print(f"Error loading model: {str(e)}")
     raise RuntimeError(f"Failed to load model: {str(e)}")
 
 @app.after_request

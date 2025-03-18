@@ -1,5 +1,10 @@
 __pycache__/
 *.py[cod]
+venv/
+.env
+*.pt
+src/model/best.pt
+.DS_Store
 *$py.class
 *.so
 .Python
@@ -18,13 +23,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-.env
 .venv
-venv/
 ENV/
 .idea/
 .vscode/
 *.swp
-.DS_Store
-*.pt
-best.pt
