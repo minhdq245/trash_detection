@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Detection</title>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #video-container {
+            margin-top: 20px;
+            position: relative;
+        }
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 1px solid #ccc;
+        }
+        #status {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+        .error-message {
+            color: red;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid red;
+            display: none;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-time Waste Detection</h1>
+        <div id="video-container">
+            <div id="permission-error" class="error-message">
+                Camera permission is required. Please allow camera access.
+                <button onclick="requestCamera()" class="button">Enable Camera</button>
+            </div>
+            <div id="connection-error" class="error-message">
+                Camera not available. Please check your camera connection.
+                <button onclick="retryConnection()" class="button">Retry</button>
+            </div>
+            <img id="video" src="{{ url_for('video_feed') }}" alt="Video stream" onerror="showError()">
+        </div>
+    </div>
+    <script>
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+        
+        async function requestCamera() {
+            try {
+                await navigator.mediaDevices.getUserMedia({ video: true });
+                reconnectAttempts = 0;
+                reloadVideoFeed();
+            } catch (err) {
+                document.getElementById('permission-error').style.display = 'block';
+            }
+        }
+
+        function reloadVideoFeed() {
+            const video = document.getElementById('video');
+            video.style.display = 'block';
+            video.src = `{{ url_for('video_feed') }}?t=${Date.now()}`;
+        }
+
+        function showError() {
+            document.getElementById('connection-error').style.display = 'block';
+            document.getElementById('video').style.display = 'none';
+            
+            if (reconnectAttempts < maxReconnectAttempts) {
+                reconnectAttempts++;
+                setTimeout(() => {
+                    console.log(`Reconnect attempt ${reconnectAttempts}`);
+                    reloadVideoFeed();
+                }, 2000);
+            }
+        }
+
+        function retryConnection() {
+            reconnectAttempts = 0;
+            document.getElementById('connection-error').style.display = 'none';
+            reloadVideoFeed();
+        }
+
+        // Request camera permission on page load
+        requestCamera();
+    </script>
+</body>
+</html>
