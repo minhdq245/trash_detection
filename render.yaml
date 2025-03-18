@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: trash-detection
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn src.app:app
-    envVars:
-      - key: MODEL_URL
-        value: https://drive.google.com/file/d/1b4E85lAa3_NVCXkre5Mty-0Z7DUaAmjl/view?usp=sharing
