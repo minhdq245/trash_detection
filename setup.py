@@ -9,5 +9,5 @@ setup(
         for line in open("requirements.txt").readlines()
         if not line.startswith(("-", "--"))
     ],
-    python_requires=">=3.10,<3.11",
+    python_requires=">=3.9,<3.10",
 )

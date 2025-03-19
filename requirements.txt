@@ -1,15 +1,16 @@
 flask==2.3.3
 werkzeug==2.3.7
-ultralytics==8.1.8
-opencv-python-headless==4.8.1.78
-numpy>=1.24.3
+streamlit==1.31.0
+ultralytics==8.0.0
+opencv-python-headless==4.7.0.72
+numpy==1.23.5
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.1.0+cpu
-torchvision==0.16.0+cpu
-pillow>=9.5.0
-requests>=2.31.0
+torch==1.13.1+cpu
+torchvision==0.14.1+cpu
+--find-links https://download.pytorch.org/whl/torch_stable.html
+pillow==9.5.0
+requests==2.31.0
 gunicorn==21.2.0
-streamlit>=1.31.0
-python-dotenv>=1.0.0
+python-dotenv==1.0.0
 setuptools>=65.5.1
 wheel>=0.38.0
