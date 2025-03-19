@@ -1,9 +1,10 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request, jsonify
 import cv2
 import time
 from src.model.yolo import WasteDetector  # Update import path
 import numpy as np
 import os
+import base64
 
 app = Flask(__name__, 
     template_folder='templates',
@@ -89,6 +90,29 @@ def video_feed():
     except Exception as e:
         print(f"Camera error: {str(e)}")
         return "Camera error", 500
+
+@app.route('/detect', methods=['POST'])
+def detect():
+    try:
+        data = request.json
+        # Decode base64 image
+        img_data = data['image'].split(',')[1]
+        img_bytes = base64.b64decode(img_data)
+        img_arr = np.frombuffer(img_bytes, np.uint8)
+        img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
+        
+        # Detect objects
+        detections = detector.detect_objects(img)
+        
+        return jsonify({
+            'status': 'success',
+            'detections': detections
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
